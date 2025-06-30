@@ -9,6 +9,8 @@ public class ObservingContextFactory extends ContextFactory {
     Context cx = super.makeContext();
     // Break every 10,000 instructions to check if we have been interrupted.
     cx.setInstructionObserverThreshold(10000);
+    // Allow access to Java packages and classes
+    cx.setClassShutter(null);
     return cx;
   }
 

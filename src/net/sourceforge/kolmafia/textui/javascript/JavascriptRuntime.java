@@ -226,7 +226,7 @@ public class JavascriptRuntime extends AbstractRuntime {
 
     // TODO: Use a shared parent scope and initialize this with that as a prototype.
     // But be careful. May mess up our EnumeratedWrapper registries.
-    Scriptable scope = cx.initSafeStandardObjects();
+    Scriptable scope = cx.initStandardObjects();
     currentTopScope = scope;
 
     try {
@@ -330,7 +330,7 @@ public class JavascriptRuntime extends AbstractRuntime {
 
   private static Object resolvePromise(Context cx, NativePromise promise) {
     // there is no good way to access promise.getResult, so let the engine store it in a variable
-    Scriptable promiseScope = cx.initSafeStandardObjects();
+    Scriptable promiseScope = cx.initStandardObjects();
     promiseScope.put("promise", promiseScope, promise);
     cx.evaluateString(
         promiseScope,

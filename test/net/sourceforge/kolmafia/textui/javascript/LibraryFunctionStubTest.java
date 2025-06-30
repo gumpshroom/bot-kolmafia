@@ -28,7 +28,7 @@ public class LibraryFunctionStubTest {
     cx.setOptimizationLevel(1);
     cx.setTrackUnhandledPromiseRejections(true);
 
-    LibraryFunctionStubTest.scope = cx.initSafeStandardObjects();
+    LibraryFunctionStubTest.scope = cx.initStandardObjects();
   }
 
   @AfterAll

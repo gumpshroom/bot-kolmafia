@@ -74,7 +74,7 @@ public class ChatSender {
 
     for (String graf : grafs) {
       String responseText =
-          ChatSender.sendMessage(accumulatedMessages, graf, false, channelRestricted, false);
+          ChatSender.sendMessage(accumulatedMessages, graf, false, false, false);
 
       ChatPoller.addSentEntry(responseText, false);
     }
