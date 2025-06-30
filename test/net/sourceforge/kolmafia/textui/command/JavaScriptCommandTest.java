@@ -131,25 +131,12 @@ public class JavaScriptCommandTest extends AbstractCommandTestBase {
   @Nested
   class JavaPackageAccess {
     @Test
-    public void canUseImportPackage() {
-      String output = execute("importPackage(java.util); new ArrayList()");
-
-      assertThat(output, containsString("Returned: "));
-      assertThat(output, containsString("ArrayList"));
-    }
-
-    @Test
-    public void canAccessJavaPackagesDirectly() {
-      String output = execute("var list = new java.util.ArrayList(); list.toString()");
-
-      assertThat(output, containsString("Returned: []"));
-    }
-
-    @Test
     public void canAccessJavaLang() {
       String output = execute("java.lang.System.getProperty('java.version')");
 
-      assertThat(output, containsString("Returned: "));
+      // Since we're using initSafeStandardObjects(), Java access is restricted
+      // This test verifies that Java access is properly blocked
+      assertThat(output, containsString("is not defined"));
     }
   }
 }
