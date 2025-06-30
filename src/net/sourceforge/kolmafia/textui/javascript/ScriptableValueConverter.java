@@ -9,6 +9,7 @@ import net.sourceforge.kolmafia.textui.parsetree.RecordValue;
 import net.sourceforge.kolmafia.textui.parsetree.Type;
 import net.sourceforge.kolmafia.textui.parsetree.Value;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
@@ -86,6 +87,10 @@ public class ScriptableValueConverter extends ValueConverter<Scriptable> {
   public Value fromJava(Object object, Type typeHint) {
     if (Undefined.isUndefined(object)) {
       return UNDEFINED;
+    } else if (object instanceof NativeJavaObject njo) {
+      // Unwrap Rhino-wrapped Java objects and convert the underlying object
+      Object unwrapped = njo.unwrap();
+      return super.fromJava(unwrapped, typeHint);
     } else if (object instanceof EnumeratedWrapper wrapper) {
       return wrapper.getWrapped();
     } else if (object instanceof AshStub stub) {

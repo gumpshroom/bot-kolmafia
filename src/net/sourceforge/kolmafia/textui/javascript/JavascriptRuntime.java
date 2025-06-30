@@ -229,6 +229,35 @@ public class JavascriptRuntime extends AbstractRuntime {
     Scriptable scope = cx.initStandardObjects();
     currentTopScope = scope;
 
+    // Add importPackage function to enable Java package imports
+    try {
+      cx.evaluateString(
+          scope,
+          "function importPackage(pkg) { "
+              + "  var pkgStr = String(pkg); "
+              + "  if (pkgStr.indexOf('java.util') !== -1) { "
+              + "    ArrayList = function() { return new java.util.ArrayList(arguments.length > 0 ? arguments[0] : undefined); }; "
+              + "    HashMap = function() { return new java.util.HashMap(arguments.length > 0 ? arguments[0] : undefined); }; "
+              + "    HashSet = function() { return new java.util.HashSet(arguments.length > 0 ? arguments[0] : undefined); }; "
+              + "    Timer = function() { return new java.util.Timer(arguments.length > 0 ? arguments[0] : undefined); }; "
+              + "    TimerTask = java.util.TimerTask; "
+              + "    Date = function() { return new java.util.Date(arguments.length > 0 ? arguments[0] : undefined); }; "
+              + "  } else if (pkgStr.indexOf('java.io') !== -1) { "
+              + "    BufferedReader = function() { return new java.io.BufferedReader(arguments[0]); }; "
+              + "    InputStreamReader = function() { return new java.io.InputStreamReader(arguments[0]); }; "
+              + "    OutputStreamWriter = function() { return new java.io.OutputStreamWriter(arguments[0]); }; "
+              + "  } else if (pkgStr.indexOf('java.net') !== -1) { "
+              + "    URL = function() { return new java.net.URL(arguments[0]); }; "
+              + "  } "
+              + "}",
+          "importPackage_definition",
+          1,
+          null);
+    } catch (Exception e) {
+      // If importPackage definition fails, log but continue
+      StaticEntity.printStackTrace(e, "Failed to define importPackage function");
+    }
+
     try {
       // If executing from GCLI (and not file), add std lib to top scope.
       currentStdLib = initRuntimeLibrary(cx, scope, scriptFile);

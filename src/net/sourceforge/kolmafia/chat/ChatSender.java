@@ -73,8 +73,7 @@ public class ChatSender {
     List<ChatMessage> accumulatedMessages = new LinkedList<>();
 
     for (String graf : grafs) {
-      String responseText =
-          ChatSender.sendMessage(accumulatedMessages, graf, false, false, false);
+      String responseText = ChatSender.sendMessage(accumulatedMessages, graf, false, false, false);
 
       ChatPoller.addSentEntry(responseText, false);
     }
