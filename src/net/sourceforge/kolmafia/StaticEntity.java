@@ -33,8 +33,7 @@ public abstract class StaticEntity {
   private static int usesRelayWindows = 0;
 
   private static boolean isGUIRequired = false;
-  private static final boolean isHeadless =
-      System.getProperty("java.awt.headless", "").equals("true");
+  private static final boolean isHeadless = true;
 
   public static final ArrayList<ActionPanel> existingPanels = new ArrayList<>();
   private static ActionPanel[] panelArray = new GenericPanel[0];
