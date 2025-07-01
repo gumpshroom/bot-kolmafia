@@ -866,6 +866,9 @@ public class KoLmafiaCLI {
     new WumpusCommand().register("wumpus");
     new ZapCommand().register("zap");
 
+    // Register chatbot CLI commands
+    new ChatBotCommand().register("chatbot");
+
     new CommandAlias("campground", "rest").register("rest");
     new CommandAlias("equip", "off-hand").register("second").register("hold").register("dualwield");
     new CommandAlias("skills", "buff").register("buff");
@@ -1021,5 +1024,44 @@ public class KoLmafiaCLI {
       return buf.toString();
     }
     return "";
+  }
+
+  /**
+   * CLI command to manage the native chat bot: start, stop, status, save, etc.
+   * Usage: chatbot start|stop|status|save
+   */
+  static class ChatBotCommand extends AbstractCommand {
+    public ChatBotCommand() {
+      this.usage = "chatbot <start|stop|status|save> - manage the native chat bot";
+    }
+
+    @Override
+    public void run(final String cmd, final String parameters) {
+      String[] args = parameters.trim().split("\\s+");
+      String subcmd = args.length > 0 ? args[0].toLowerCase() : "";
+      var manager = net.sourceforge.kolmafia.games.ChatGameManager.getInstance();
+
+      switch (subcmd) {
+        case "start":
+          manager.start();
+          RequestLogger.printLine("chatbot started");
+          break;
+        case "stop":
+          manager.stop();
+          RequestLogger.printLine("chatbot stopped");
+          break;
+        case "status":
+          boolean running = manager != null && manager.getStats() != null && manager.getStats().gamesCount >= 0;
+          RequestLogger.printLine("chatbot status: " + (running ? "running" : "stopped"));
+          break;
+        case "save":
+          manager.saveGameState();
+          RequestLogger.printLine("chatbot state saved");
+          break;
+        default:
+          RequestLogger.printLine("usage: chatbot <start|stop|status|save>");
+          break;
+      }
+    }
   }
 }

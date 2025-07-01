@@ -581,6 +581,23 @@ public abstract class ChatManager {
 
   public static final void invokeChatScript(
       final String sender, final String content, final String channel) {
+    // Native Java chatbot integration: if the native bot is running, handle the message
+    try {
+      net.sourceforge.kolmafia.games.ChatGameManager manager = net.sourceforge.kolmafia.games.ChatGameManager.getInstance();
+      if (manager != null) {
+        // Only handle if bot is running
+        java.lang.reflect.Field runningField = manager.getClass().getDeclaredField("isRunning");
+        runningField.setAccessible(true);
+        boolean isRunning = runningField.getBoolean(manager);
+        if (isRunning) {
+          manager.handleChatMessage(sender, content);
+          return; // Don't run userscript if native bot is active
+        }
+      }
+    } catch (Throwable t) {
+      // Ignore errors from native bot
+    }
+
     String scriptName = Preferences.getString("chatbotScript");
     if (scriptName.equals("")) {
       return;
